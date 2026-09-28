@@ -1,0 +1,16 @@
+{
+    "name": "ModTools.ItemCopy.Editor",
+    "rootNamespace": "ModTools.ItemCopy",
+    "references": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,10 @@
+{
+  "name": "com.lordofcloud.itemcopy",
+  "version": "1.0.0",
+  "displayName": "Item Copy",
+  "description": "Editor tool to duplicate a Core Keeper mod item prefab together with its data blocks, text block, sprites and textures.",
+  "author": {
+    "name": "LordOfCloud"
+  },
+  "keywords": ["core keeper", "modding", "editor", "prefab"]
+}
