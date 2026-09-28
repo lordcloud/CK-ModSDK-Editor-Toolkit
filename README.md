@@ -12,8 +12,9 @@ Editor-only, own assembly (`ModTools.ItemCopy.Editor`), no dependencies besides 
 ## Use
 Right-click an item prefab (with `ObjectAuthoring` or legacy `EntityMonoBehaviourData`) → **Assets > Mod Tools > Copy Item...**
 
-- **Name prefix**: optional mod prefix for object names (e.g. `MyMod_`). Saved per editor, stripped when deriving file names.
+- **Name prefix**: optional mod prefix (e.g. `MyMod_`), saved per editor. Enter the object name without it; the result is shown below. The prefix is applied to the object name and all generated asset names (prefab, data blocks, text block).
 - Data blocks can be duplicated or kept shared with the source. The entity block is always duplicated.
+- Text block: only the English title/description is set, other languages are cleared and *Should Be Localized* is turned off.
 - Legacy prefabs are converted to `ObjectAuthoring` + `InventoryItemAuthoring`.
 - Everything else (stats, conditions, recipe, weapon/projectile setup) is copied unchanged.
 
