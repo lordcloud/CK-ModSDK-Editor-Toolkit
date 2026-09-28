@@ -610,10 +610,16 @@ namespace ModTools.ItemCopy
                 for (int i = 0; i < values.arraySize; i++)
                 {
                     SerializedProperty entry = values.GetArrayElementAtIndex(i);
-                    entry.FindPropertyRelative("title").stringValue = itemTitle;
-                    entry.FindPropertyRelative("description").stringValue = itemDescription;
+                    SerializedProperty language = entry.FindPropertyRelative("m_language.m_address.m_low");
+                    bool isEnglish = language != null && language.longValue == EnglishLanguageLow;
+                    entry.FindPropertyRelative("title").stringValue = isEnglish ? itemTitle : string.Empty;
+                    entry.FindPropertyRelative("description").stringValue = isEnglish ? itemDescription : string.Empty;
                 }
             }
+
+            SerializedProperty shouldBeLocalized = serializedText.FindProperty("m_shouldBeLocalized");
+            if (shouldBeLocalized != null)
+                shouldBeLocalized.boolValue = false;
 
             SerializedProperty primaryTitle = serializedText.FindProperty("m_prevImportPrimaryEntry.title");
             SerializedProperty primaryDescription = serializedText.FindProperty("m_prevImportPrimaryEntry.description");
