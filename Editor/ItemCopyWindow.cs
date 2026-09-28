@@ -67,6 +67,7 @@ namespace ModTools.ItemCopy
         private string loadError;
 
         private string objectNamePrefix = string.Empty;
+        private string newCoreName = string.Empty;
         private string newObjectName = string.Empty;
         private string targetFolder = string.Empty;
         private string prefabName = string.Empty;
@@ -194,7 +195,8 @@ namespace ModTools.ItemCopy
             }
 
             objectNamePrefix = EditorPrefs.GetString(PrefixPrefsKey, string.Empty);
-            newObjectName = ModAssetCopyUtility.IsInAssets(path) ? sourceObjectName : objectNamePrefix + sourceObjectName;
+            newCoreName = CoreName(sourceObjectName);
+            newObjectName = objectNamePrefix + newCoreName;
             targetFolder = ModAssetCopyUtility.IsInAssets(path) ? ModAssetCopyUtility.ParentFolder(path) : EditorPrefs.GetString(LastFolderPrefsKey, "Assets");
             prefabNameEdited = false;
             dataDirectoryEdited = false;
@@ -272,13 +274,16 @@ namespace ModTools.ItemCopy
 
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("New Item", EditorStyles.boldLabel);
-            string prefix = EditorGUILayout.TextField(new GUIContent("Name prefix", "Mod prefix for object names, e.g. MyMod_. Stripped when deriving file names. Saved per editor."), objectNamePrefix).Trim();
+            string prefix = EditorGUILayout.TextField(new GUIContent("Name prefix", "Mod prefix, e.g. MyMod_. Put in front of the object name and all generated asset names. Saved per editor."), objectNamePrefix).Trim();
             if (prefix != objectNamePrefix)
             {
                 objectNamePrefix = prefix;
                 EditorPrefs.SetString(PrefixPrefsKey, objectNamePrefix);
             }
-            newObjectName = EditorGUILayout.TextField("Object name", newObjectName).Trim();
+            newCoreName = EditorGUILayout.TextField(new GUIContent("Object name", "Name without prefix"), newCoreName).Trim();
+            newObjectName = objectNamePrefix + newCoreName;
+            using (new EditorGUI.DisabledScope(true))
+                EditorGUILayout.TextField("Result", newObjectName);
             UpdateAutoNames();
 
             targetFolder = EditorGUILayout.TextField(new GUIContent("Folder", "Target folder for the new prefab"), targetFolder);
@@ -420,18 +425,31 @@ namespace ModTools.ItemCopy
                 if (!block.NameEdited)
                 {
                     string sourceName = Path.GetFileNameWithoutExtension(block.SourcePath);
-                    block.NewName = AutoRename(sourceName, CoreName(newObjectName) + "_" + sourceName);
+                    block.NewName = AutoRename(sourceName, newObjectName + "_" + sourceName);
                 }
             }
         }
 
         private string AutoRename(string sourceName, string fallback)
         {
-            string oldCore = CoreName(sourceObjectName);
-            string newCore = CoreName(newObjectName);
-            if (oldCore.Length > 0 && newCore.Length > 0 && sourceName.Contains(oldCore))
-                return sourceName.Replace(oldCore, newCore);
-            return fallback;
+            string result = fallback;
+            if (newCoreName.Length > 0 && !string.IsNullOrEmpty(sourceObjectName))
+            {
+                string oldCore = CoreName(sourceObjectName);
+                if (sourceName.Contains(sourceObjectName))
+                    result = sourceName.Replace(sourceObjectName, newObjectName);
+                else if (oldCore.Length > 0 && sourceName.Contains(oldCore))
+                    result = sourceName.Replace(oldCore, newObjectName);
+            }
+
+            return EnsurePrefix(result);
+        }
+
+        private string EnsurePrefix(string name)
+        {
+            if (string.IsNullOrEmpty(objectNamePrefix) || name.StartsWith(objectNamePrefix, StringComparison.Ordinal))
+                return name;
+            return objectNamePrefix + name;
         }
 
         private string CoreName(string objectName)
@@ -466,10 +484,14 @@ namespace ModTools.ItemCopy
             else if (!IsValidFolderPath(folder))
                 result.Add("Folder contains an invalid segment: " + folder);
 
-            if (!ObjectNameRegex.IsMatch(newObjectName))
-                result.Add("Object name must start with a letter and contain only letters, digits and underscores.");
+            if (newCoreName.Length == 0)
+                result.Add("Object name is empty.");
+            else if (objectNamePrefix.Length > 0 && newCoreName.StartsWith(objectNamePrefix, StringComparison.Ordinal))
+                result.Add("Object name already starts with the prefix " + objectNamePrefix + ". Enter it without the prefix.");
+            else if (!ObjectNameRegex.IsMatch(newObjectName))
+                result.Add("Prefix and object name must start with a letter and contain only letters, digits and underscores.");
             else if (newObjectName == sourceObjectName)
-                result.Add("Object name must differ from the source.");
+                result.Add("Resulting name " + newObjectName + " is the same as the source. Change the object name or the prefix.");
             else if (ModAssetCopyUtility.IsVanillaObjectName(newObjectName))
                 result.Add("Object name " + newObjectName + " is a vanilla ObjectID.");
             else if (result.Count == 0 && ModAssetCopyUtility.ObjectNameUsedInRoot(newObjectName, ModAssetCopyUtility.AssetRoot(folder)))
