@@ -3,7 +3,7 @@
 Editor tool to duplicate an item prefab together with its data blocks, text block, sprites and textures.
 
 ## Install
-Option A, Package Manager: *Window > Package Manager > + > Add package from git URL* and enter the repository URL (ending in `.git`).
+Option A, Package Manager: *Window > Package Manager > + > Install package from git URL* and enter the repository URL (ending in `.git`).
 
 Option B, manual: copy the repository contents anywhere under `Assets/` in your mod SDK project.
 
