@@ -16,3 +16,10 @@ Right-click an item prefab (with `ObjectAuthoring` or legacy `EntityMonoBehaviou
 - Data blocks can be duplicated or kept shared with the source. The entity block is always duplicated.
 - Legacy prefabs are converted to `ObjectAuthoring` + `InventoryItemAuthoring`.
 - Everything else (stats, conditions, recipe, weapon/projectile setup) is copied unchanged.
+
+## License
+MIT, see [LICENSE](LICENSE).
+
+## Disclaimer
+Unofficial community tool, not affiliated with or endorsed by Pugstorm or Fireshine Games. Core Keeper and related names are trademarks of their respective owners.
+This repository contains no game code or assets. It only refers to Core Keeper SDK types by name. Using it requires the official Core Keeper Mod SDK, which is subject to its own terms.

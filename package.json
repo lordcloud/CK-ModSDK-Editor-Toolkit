@@ -3,8 +3,14 @@
   "version": "1.0.0",
   "displayName": "Item Copy",
   "description": "Editor tool to duplicate a Core Keeper mod item prefab together with its data blocks, text block, sprites and textures.",
+  "license": "MIT",
   "author": {
     "name": "LordOfCloud"
   },
-  "keywords": ["core keeper", "modding", "editor", "prefab"]
+  "keywords": [
+    "core keeper",
+    "modding",
+    "editor",
+    "prefab"
+  ]
 }
